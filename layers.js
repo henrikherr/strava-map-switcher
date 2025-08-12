@@ -70,7 +70,7 @@ var AdditionalMapLayers;
 			url: "https://map2.kompass.de/{z}/{x}/{y}/kompass_touristic?key=2ba8c124-38b6-11e7-ade1-e0cb4e14e399&proj=outdooractive",
 			opts: {minZoom: 5, maxZoom: 18, attribution: '© <a href=\"https://www.kompass.de/\">Kompass Karten</a>'}},
 		kompassCH: {name: "Kompass CH",
-			url: "https://map4.kompass.de/{z}/{x}/{y}/hkf_classic?key=localStorage.getItem("window.kompass.key")&jwt=localStorage.getItem("window.kompass.jwt")",
+			url: `https://map4.kompass.de/{z}/{x}/{y}/hkf_classic?key=${localStorage.getItem("window.kompass.key")}&jwt=${localStorage.getItem("window.kompass.jwt")}`,
 			opts: {minZoom: 5, maxZoom: 18, attribution: '© <a href=\"https://www.kompass.de/\">Kompass Karten</a>'}},
 
 	};
