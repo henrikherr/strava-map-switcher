@@ -34,7 +34,42 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		};
 		return s;
 	}
+// /////////////////////////
+	 //if (!window.AdditionalMapLayers) return; // warten bis das Objekt existiert
 
+    // API Key und JWT aus localStorage laden
+    const apiKey = localStorage.getItem("window.kompass.key") || "";
+    const jwt = localStorage.getItem("window.kompass.jwt") || "";
+
+    // Leaflet-TileLayer mit Referrer-Bypass
+    const kompassLayer = L.tileLayer(
+        `https://map4.kompass.de/{z}/{x}/{y}/hkf_classic?key=${apiKey}&jwt=${jwt}`,
+        {
+            attribution: '&copy; <a href="https://www.kompass.de/">Kompass</a>',
+            maxZoom: 18,
+            tileSize: 256,
+            crossOrigin: true
+        }
+    );
+
+    // Referrer-Policy patchen
+    const origCreateTile = kompassLayer.createTile;
+    kompassLayer.createTile = function(coords, done) {
+        const tile = origCreateTile.call(this, coords, done);
+        if (tile && tile.tagName === "IMG") {
+            tile.referrerPolicy = "no-referrer";
+            tile.crossOrigin = "anonymous";
+        }
+        return tile;
+    };
+
+    // In die AdditionalMapLayers eintragen
+    window.AdditionalMapLayers["Kompass Classic"] = kompassLayer;
+
+    console.log("Kompass Layer hinzugefügt.");
+	
+// /////////////////////////
+	
 	function layerFromLeaflet(map, type, before) {
 		const l = AdditionalMapLayers[type];
 
