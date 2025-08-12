@@ -74,6 +74,7 @@ var AdditionalMapLayers;
 			opts: {minZoom: 5, maxZoom: 18, attribution: '© <a href=\"https://www.kompass.de/\">Kompass Karten</a>'}},
 
 	};
+}
 
 	// --- Leaflet: Referrer unterdrücken für alle Tiles ---
 (function waitForLeaflet() {
@@ -89,5 +90,3 @@ var AdditionalMapLayers;
     return tile;
   };
 })();
-
-}
