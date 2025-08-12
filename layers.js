@@ -74,4 +74,20 @@ var AdditionalMapLayers;
 			opts: {minZoom: 5, maxZoom: 18, attribution: '© <a href=\"https://www.kompass.de/\">Kompass Karten</a>'}},
 
 	};
+
+	// --- Leaflet: Referrer unterdrücken für alle Tiles ---
+(function waitForLeaflet() {
+  if (!window.L || !L.TileLayer) { setTimeout(waitForLeaflet, 200); return; }
+
+  const origCreateTile = L.TileLayer.prototype.createTile;
+  L.TileLayer.prototype.createTile = function(coords, done) {
+    const tile = origCreateTile.call(this, coords, done);
+    if (tile && tile.tagName === 'IMG') {
+      tile.referrerPolicy = 'no-referrer'; // <<< wichtig gegen 401 vom Tile-Server
+      tile.crossOrigin = 'anonymous';      // optional
+    }
+    return tile;
+  };
+})();
+
 }
