@@ -12,6 +12,20 @@
 
 var AdditionalMapLayers;
 
+(function waitForLeaflet() {
+  if (!window.L || !L.TileLayer) { setTimeout(waitForLeaflet, 200); return; }
+
+  const origCreateTile = L.TileLayer.prototype.createTile;
+  L.TileLayer.prototype.createTile = function(coords, done) {
+    const tile = origCreateTile.call(this, coords, done);
+    if (tile && tile.tagName === 'IMG') {
+      tile.referrerPolicy = 'no-referrer'; // <<< wichtig gegen 401 vom Tile-Server
+      tile.crossOrigin = 'anonymous';      // optional
+    }
+    return tile;
+  };
+})();
+
 {
 	const osmAttr = '&copy; <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank">CC-BY-SA</a>';
 	const thunderforestAttr = osmAttr + ', Tiles courtesy of <a href="https://www.thunderforest.com/" target="_blank">Andy Allan</a>';
@@ -76,16 +90,4 @@ var AdditionalMapLayers;
 	};
 }
 
-(function waitForLeaflet() {
-  if (!window.L || !L.TileLayer) { setTimeout(waitForLeaflet, 200); return; }
 
-  const origCreateTile = L.TileLayer.prototype.createTile;
-  L.TileLayer.prototype.createTile = function(coords, done) {
-    const tile = origCreateTile.call(this, coords, done);
-    if (tile && tile.tagName === 'IMG') {
-      tile.referrerPolicy = 'no-referrer'; // <<< wichtig gegen 401 vom Tile-Server
-      tile.crossOrigin = 'anonymous';      // optional
-    }
-    return tile;
-  };
-})();
