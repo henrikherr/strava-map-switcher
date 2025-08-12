@@ -76,7 +76,6 @@ var AdditionalMapLayers;
 	};
 }
 
-	// --- Leaflet: Referrer unterdrücken für alle Tiles ---
 (function waitForLeaflet() {
   if (!window.L || !L.TileLayer) { setTimeout(waitForLeaflet, 200); return; }
 
