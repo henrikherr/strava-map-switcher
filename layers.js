@@ -67,7 +67,7 @@ var AdditionalMapLayers;
 			url: "https://wxs.ign.fr/an7nvfzojv5wa96dsga5nk8w/geoportail/wmts?layer=ORTHOIMAGERY.ORTHOPHOTOS&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg&TileMatrix={z}&TileCol={x}&TileRow={y}",
 			opts: {maxZoom: 20, maxNativeZoom: 19, attribution: geoportailAttr}},
 		kompass: {name: "Kompass Touristic [DE/AT/IT]",
-			url: "https://map2.kompass.de/{z}/{x}/{y}/kompass_touristic?key=2ba8c124-38b6-11e7-ade1-e0cb4e14e399&proj=outdooractive",
+			url: "https://map2.kompass.de/{z}/{x}/{y}/kompass_touristic?key=KEY&proj=outdooractive",
 			opts: {minZoom: 5, maxZoom: 18, attribution: '© <a href=\"https://www.kompass.de/\">Kompass Karten</a>'}},
 	};
 }
