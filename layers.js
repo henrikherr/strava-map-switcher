@@ -71,7 +71,6 @@ var AdditionalMapLayers;
 			url: "https://map2.kompass.de/{z}/{x}/{y}/kompass_touristic?key=2ba8c124-38b6-11e7-ade1-e0cb4e14e399&proj=outdooractive",
 			opts: {minZoom: 5, maxZoom: 18, attribution: '© <a href=\"https://www.kompass.de/\">Kompass Karten</a>'}},
 
-// … in AdditionalMapLayers:
 
 		swisstopo: {name: "Swisstopo Landeskarte [CH]",
 			url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg",
