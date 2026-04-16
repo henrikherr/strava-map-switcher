@@ -84,6 +84,21 @@ var AdditionalMapLayers;
 		swisstopoAerial: {name: "Swisstopo Luftbild [CH]",
 			url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg",
 			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 20, attribution: swisstopoAttr}},
+		swisstopoWanderwegeGesperrt: {name: "Swisstopo Wanderwege + Sperrungen [CH]",
+			url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg",
+			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 19,
+				keepBuffer: 4, updateWhenZooming: true,
+				attribution: swisstopoAttr},
+			overlay: {
+				wms: true,
+				url: "https://wms.geo.admin.ch/",
+				opts: {
+					layers: "ch.swisstopo.swisstlm3d-wanderwege,ch.astra.wanderland-sperrungen_umleitungen",
+					format: "image/png",
+					transparent: true,
+					version: "1.3.0",
+					attribution: swisstopoAttr
+				}}},
 
 	};  // ← schließt AdditionalMapLayers
 }
