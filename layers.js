@@ -69,5 +69,17 @@ var AdditionalMapLayers;
 		kompass: {name: "Kompass Touristic [DE/AT/IT]",
 			url: "https://map2.kompass.de/{z}/{x}/{y}/kompass_touristic?key=KEY&proj=outdooractive",
 			opts: {minZoom: 5, maxZoom: 18, attribution: '© <a href=\"https://www.kompass.de/\">Kompass Karten</a>'}},
-	};
+		const swisstopoAttr = '&copy; <a href="https://www.swisstopo.ch/" target="_blank">swisstopo</a>';
+
+// … in AdditionalMapLayers:
+swisstopo: {name: "Swisstopo Landeskarte [CH]",
+    url: "https://wmts20.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg",
+    opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18, attribution: swisstopoAttr}},
+swisstopoAerial: {name: "Swisstopo Luftbild [CH]",
+    url: "https://wmts20.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg",
+    opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 19, attribution: swisstopoAttr}},
+	
+swisstopoWandern: {name: "Swisstopo Wanderwege [CH]",
+    url: "https://wmts20.geo.admin.ch/1.0.0/ch.astra.wanderland/default/current/3857/{z}/{x}/{y}.png",
+    opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18, attribution: swisstopoAttr, opacity: 0.7}},
 }
