@@ -16,14 +16,20 @@ document.arrive(".leaflet-container", {onceOnly: false, existing: true, fireOnAt
 	if (leafletContainer.mapSwitcherDone) return;
 	leafletContainer.mapSwitcherDone = true;
 
-	function tileLayer(l) {
-		var r = L.tileLayer(l.url, l.opts);
-		if (l.overlay) {
-			var o = L.tileLayer(l.overlay.url, l.overlay.opts);
-			r = L.layerGroup([r, o]);
-		}
-		return r;
-	}
+// in tileLayer() in fix.js:
+function tileLayer(l) {
+    var r = l.wms
+        ? L.tileLayer.wms(l.url, l.opts)
+        : L.tileLayer(l.url, l.opts);
+    const overlays = l.overlays || (l.overlay ? [l.overlay] : []);
+    if (overlays.length) {
+        const layers = [r, ...overlays.map(o =>
+            o.wms ? L.tileLayer.wms(o.url, o.opts) : L.tileLayer(o.url, o.opts)
+        )];
+        r = L.layerGroup(layers);
+    }
+    return r;
+}
 
 	function addLayers(map) {
 		Object.entries(AdditionalMapLayers).forEach(([type, l]) => map.layers[type] = tileLayer(l));
