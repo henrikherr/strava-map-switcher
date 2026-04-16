@@ -85,14 +85,17 @@ var AdditionalMapLayers;
 		swisstopoAerial: {name: "Swisstopo Luftbild [CH]",
 			url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg",
 			opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 19, attribution: swisstopoAttr}},
-		swisstopoWanderwegeGesperrt: {name: "Swisstopo Wanderwege + Sperrungen [CH]",
-    		url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg",
-    		opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 18, attribution: swisstopoAttr},
+swisstopoWanderwegeGesperrt: {name: "Swisstopo Wanderwege + Sperrungen [CH]",
+    url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg",
+    opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 19, attribution: swisstopoAttr},
     overlays: [
         {url: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swisstlm3d-wanderwege/default/current/3857/{z}/{x}/{y}.png",
             opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 19, attribution: swisstopoAttr}},
-        {url: "https://wmts.geo.admin.ch/1.0.0/ch.astra.wanderland-sperrungen_umleitungen/default/current/3857/{z}/{x}/{y}.png",
-            opts: {minZoom: 2, maxZoom: 20, maxNativeZoom: 19, attribution: swisstopoAttr, opacity: 0.9}},
+        {wms: true,
+            url: "https://wms.geo.admin.ch/",
+            opts: {layers: "ch.astra.wanderland-sperrungen_umleitungen",
+                format: "image/png", transparent: true, version: "1.3.0",
+                attribution: swisstopoAttr}},
     ]},
 	};  // ← schließt AdditionalMapLayers
 }
