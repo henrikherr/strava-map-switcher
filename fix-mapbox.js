@@ -42,7 +42,7 @@ function sourceFromLeaflet(l) {
         return {
             type: "raster",
             tiles: [url],
-            tileSize: 256,
+            tileSize: 128,
             attribution: l.opts.attribution,
         };
     }
@@ -51,7 +51,7 @@ function sourceFromLeaflet(l) {
         tiles: tilesFromLeaflet(l),
         minzoom: l.opts.minZoom ? l.opts.minZoom : 0,
         maxzoom: l.opts.maxNativeZoom ? l.opts.maxNativeZoom : l.opts.maxZoom ? l.opts.maxZoom : 18,
-        tileSize: 256,
+        tileSize: 128,
         attribution: l.opts.attribution,
     };
 }
