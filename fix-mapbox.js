@@ -23,33 +23,51 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		}
 	}
 
-	function sourceFromLeaflet(l) {
-		const s = {
-			type: "raster",
-			tiles: tilesFromLeaflet(l),
-			minzoom: l.opts.minZoom ? l.opts.minZoom : 0,
-			maxzoom: l.opts.maxNativeZoom ? l.opts.maxNativeZoom : l.opts.maxZoom ? l.opts.maxZoom : 18,
-			tileSize: 256,
-			attribution: l.opts.attribution,
-		};
-		return s;
-	}
+function sourceFromLeaflet(l) {
+    if (l.wms) {
+        const params = new URLSearchParams({
+            SERVICE: "WMS",
+            VERSION: l.opts.version || "1.3.0",
+            REQUEST: "GetMap",
+            LAYERS: l.opts.layers,
+            STYLES: "",
+            FORMAT: l.opts.format || "image/png",
+            TRANSPARENT: l.opts.transparent ? "true" : "false",
+            WIDTH: 256,
+            HEIGHT: 256,
+            CRS: "EPSG:3857",
+        });
+        // BBOX muss als Literal bleiben, nicht URL-encoded!
+        const url = l.url + "?" + params.toString() + "&BBOX={bbox-epsg-3857}";
+        return {
+            type: "raster",
+            tiles: [url],
+            tileSize: 256,
+            attribution: l.opts.attribution,
+        };
+    }
+    return {
+        type: "raster",
+        tiles: tilesFromLeaflet(l),
+        minzoom: l.opts.minZoom ? l.opts.minZoom : 0,
+        maxzoom: l.opts.maxNativeZoom ? l.opts.maxNativeZoom : l.opts.maxZoom ? l.opts.maxZoom : 18,
+        tileSize: 256,
+        attribution: l.opts.attribution,
+    };
+}
 
-	
-	function layerFromLeaflet(map, type, before) {
-		const l = AdditionalMapLayers[type];
-
-		if (l.overlay) {
-			const s = `${type}_overlay`;
-			if (!map.getSource(s))
-				map.addSource(s, sourceFromLeaflet(l.overlay));
-			map.addLayer({id: "map-switcher-overlay", type: "raster", source: s}, before);
-		}
-
-		if (!map.getSource(type))
-			map.addSource(type, sourceFromLeaflet(l));
-		map.addLayer({id: "map-switcher", type: "raster", source: type}, l.overlay ? "map-switcher-overlay" : before);
-	}
+function layerFromLeaflet(map, type, before) {
+    const l = AdditionalMapLayers[type];
+    if (l.overlay) {
+        const s = `${type}_overlay`;
+        if (!map.getSource(s))
+            map.addSource(s, sourceFromLeaflet(l.overlay));
+        map.addLayer({id: "map-switcher-overlay", type: "raster", source: s}, before);
+    }
+    if (!map.getSource(type))
+        map.addSource(type, sourceFromLeaflet(l));
+    map.addLayer({id: "map-switcher", type: "raster", source: type}, l.overlay ? "map-switcher-overlay" : before);
+}
 
 	function clearMapSwitcherLayers(map) {
 		if (map.getLayer("map-switcher-overlay"))
@@ -236,33 +254,34 @@ document.arrive(".mapboxgl-map", {onceOnly: false, existing: true, fireOnAttribu
 		jQuery('body').append(nav);
 	}
 
-	async function patchReactMapbox(map) {
-		await MapSwitcher.wait(() => map.getLayer("global-heatmap") || map.getLayer("personal-heatmap"));
+async function patchReactMapbox(map) {
+	// warte kurz damit die Karte initialisiert ist, aber heatmap ist nicht zwingend
+	const heatLayer = await MapSwitcher.wait(() =>
+		map.getLayer("global-heatmap") ||
+		map.getLayer("personal-heatmap") ||
+		map.isStyleLoaded()  // ← fallback: style geladen reicht auch
+	);
 
-		function setMapType(t) {
-			if (t && !AdditionalMapLayers[t])
-				return;
-
-			clearMapSwitcherLayers(map);
-			localStorage.stravaMapSwitcherPreferred = t;
-
-			if (t) {
-				clearCompositeLayers(map);
-				layerFromLeaflet(map, t,
-					map.getLayer("global-heatmap") ? "global-heatmap" :
-					map.getLayer("personal-heatmap") ? "personal-heatmap" :
-					"z-index-1");
-			}
+	function setMapType(t) {
+		if (t && !AdditionalMapLayers[t])
+			return;
+		clearMapSwitcherLayers(map);
+		localStorage.stravaMapSwitcherPreferred = t;
+		if (t) {
+			clearCompositeLayers(map);
+			layerFromLeaflet(map, t,
+				map.getLayer("global-heatmap") ? "global-heatmap" :
+				map.getLayer("personal-heatmap") ? "personal-heatmap" :
+				"z-index-1");
 		}
-
-		const preferredMap = localStorage.stravaMapSwitcherPreferred;
-		if (preferredMap)
-			setTimeout(() => setMapType(preferredMap));
-
-		patchPersonalHeatmapSidebar(setMapType)
-			|| patchRouteBuilderSidebar(setMapType, true)
-			|| fallbackSwitcher(setMapType);
 	}
+	const preferredMap = localStorage.stravaMapSwitcherPreferred;
+	if (preferredMap)
+		setTimeout(() => setMapType(preferredMap));
+	patchPersonalHeatmapSidebar(setMapType)
+		|| patchRouteBuilderSidebar(setMapType, true)
+		|| fallbackSwitcher(setMapType);
+}
 
 	const mapboxReactFiber = reactFiber(this);
 	if (mapboxReactFiber) {
