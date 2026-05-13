@@ -1,0 +1,19 @@
+// ==UserScript==
+// @name         Strava Map Switcher + Referrer Fix
+// @namespace    https://github.com/henrikherr/
+// @version      1.0.0
+// @description  Fügt Strava Map Switcher hinzu und patcht Leaflet für referrerPolicy
+// @author       Henrik Herr
+// @match        https://www.strava.com/*
+// @grant        webRequest
+// @grant        webRequestBlocking
+// @run-at       document-start
+// ==/UserScript==
+
+(function () {
+    // Map Switcher laden
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/gh/henrikherr/strava-map-switcher@master/load.js";
+    script.type = "text/javascript";
+    document.body.appendChild(script);
+})();
